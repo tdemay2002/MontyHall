@@ -1,6 +1,6 @@
 import random
 
-# change to how many simulations you would like to run
+# change this number to decide how many simulations you would like to run for both switch and stay
 NUM_SIMULATIONS = 10000
 
 switchCase = {
