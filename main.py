@@ -1,77 +1,111 @@
 import random
 
+# change to how many simulations you would like to run
+NUM_SIMULATIONS = 10000
+
+switchCase = {
+    "correct": 0,
+    "incorrect": 0,
+    "prob": 0.0
+}
+stayCase = {
+    "correct": 0,
+    "incorrect": 0,
+    "prob": 0.0
+}
+
+
 def randomDoor():
     return random.randint(0,2)
 
-def setupDoors():
-    newDoors = [0,0,0]
-    correctDoor = randomDoor()
-    newDoors[correctDoor] = 1
-    return newDoors, correctDoor
 
-def montyHallAlgorithm(switchDoorBool, correctSwitchingGuesses, incorrectSwitchingGuesses, correctStayGuesses, incorrectStayGuesses):
+def calcWinProb(numCorrect, numIncorrect):
+    return (numCorrect/(numCorrect+numIncorrect))*100
+
+
+def montyHallAlgorithm(switchDoorBool):
         nonPickedDoor = [0,1,2]
-        openedDoor = -1
         nonOpenedDoor = -1
 
-        doors, correctDoor = setupDoors()
+        # there exists 1 correct door
+        correctDoor = randomDoor()
 
-        # door is picked
+        # user picks a door
         pickedDoor = randomDoor()
         nonPickedDoor.remove(pickedDoor)
 
-        # empty door is opened! 
+        # host reveals an empty door! (Get the door that was not opened or picked)
         if (nonPickedDoor[0] == correctDoor):
-            openedDoor = nonPickedDoor[1]
             nonOpenedDoor = nonPickedDoor[0]
         else:
-            openedDoor = nonPickedDoor[0]
             nonOpenedDoor = nonPickedDoor[1]
 
-        # switch doors
-        if (switchDoorBool == True):
+        # does user want to switch to the other closed door?
+        # update wins
+        if (switchDoorBool):
             pickedDoor = nonOpenedDoor
-
+            
             if (pickedDoor == correctDoor):
-                print("SWITCH: You got it right!")
-                correctSwitchingGuesses += 1
+                switchCase["correct"] += 1
             else:
-                print("SWITCH: You got it wrong")
-                incorrectSwitchingGuesses += 1
+                switchCase["incorrect"] += 1
 
-
-        # dont switch
-        elif (switchDoorBool == False):
-
+        else:
             if (pickedDoor == correctDoor):
-                print("STAY: You got it right!")
-                correctStayGuesses += 1
-            else: 
-                print("STAY: You got it wrong")
-                incorrectStayGuesses += 1
-        
-        return correctSwitchingGuesses, incorrectSwitchingGuesses, correctStayGuesses, incorrectStayGuesses
+                stayCase["correct"] += 1
+            else:
+                stayCase["incorrect"] += 1
+
+
+def runSimulations(switchDoorBool):
+    for _ in range(NUM_SIMULATIONS):
+        montyHallAlgorithm(switchDoorBool)
+    
+    if (switchDoorBool):
+        switchCase["prob"] = calcWinProb(switchCase["correct"], switchCase["incorrect"])
+    else:
+        stayCase["prob"] = calcWinProb(stayCase["correct"], stayCase["incorrect"])
+
+
+def printResults():
+    correctSwitchString = f" * Correct {switchCase["correct"]} times. "
+    incorrectSwitchString = f" * Incorrect {switchCase["incorrect"]} times. "
+    switchProbString = f" * Probability of winning: {switchCase["prob"]:.2f}% "
+    correctStayString = f" * Correct {stayCase["correct"]} times. "
+    incorrectStayString = f" * Incorrect {stayCase["incorrect"]} times. "
+    stayProbString = f" * Probability of winning: {stayCase["prob"]:.2f}% "
+
+    textWidth = max(
+        len(correctSwitchString),
+        len(incorrectSwitchString),
+        len(switchProbString),
+        len(correctStayString),
+        len(incorrectStayString),
+        len(stayProbString)
+    )
+    print("+" + "-"*textWidth + "-----" + "-"*textWidth + "+")
+    print("|" + f"{'MONTY HALL PROBLEM':^{textWidth*2 + 5}}" + "|")
+    print("+" + "-"*textWidth + "--+--" + "-"*textWidth + "+")
+    print("|" + f"{'SWITCH':^{textWidth}}  |  {'STAY':^{textWidth}}" + "|")
+    print("+" + "-"*textWidth + "--+--" + "-"*textWidth + "+")
+    print("|" + f"{correctSwitchString:<{textWidth}}  |  {correctStayString:<{textWidth}}" + "|")
+    print("|" + f"{incorrectSwitchString:<{textWidth}}  |  {incorrectStayString:<{textWidth}}" + "|")
+    print("|" + f"{switchProbString:<{textWidth}}  |  {stayProbString:<{textWidth}}" + "|")
+    print("+" + "-"*textWidth + "--+--" + "-"*textWidth + "+")
+
 
 
 def main():
-    correctSwitchingGuesses = 0
-    incorrectSwitchingGuesses = 0
-    correctStayGuesses = 0
-    incorrectStayGuesses = 0
 
-    for _ in range(100):
-        correctSwitchingGuesses, incorrectSwitchingGuesses, correctStayGuesses, incorrectStayGuesses = montyHallAlgorithm(True, correctSwitchingGuesses, incorrectSwitchingGuesses, correctStayGuesses, incorrectStayGuesses)
-        correctSwitchingGuesses, incorrectSwitchingGuesses, correctStayGuesses, incorrectStayGuesses = montyHallAlgorithm(False, correctSwitchingGuesses, incorrectSwitchingGuesses, correctStayGuesses, incorrectStayGuesses)
+    # case when choosing to switch
+    switchDoor = True
+    runSimulations(switchDoor)
 
-    switchProb = (correctSwitchingGuesses/(correctSwitchingGuesses+incorrectSwitchingGuesses))*100
-    stayProb = (correctStayGuesses/(correctStayGuesses+incorrectStayGuesses))*100
-    print(f"\nCorrect {correctSwitchingGuesses} times.")
-    print(f"Incorrect {incorrectSwitchingGuesses} times.")
-    print(f"Probability from switching doors is: {switchProb:.2f}%")
-    
-    print(f"\nCorrect {correctStayGuesses} times.")
-    print(f"Incorrect {incorrectStayGuesses} times.")
-    print(f"Probability from stay doors is: {stayProb:.2f}%")
+    # case when choosing to stay
+    switchDoor = False
+    runSimulations(switchDoor)
+
+    printResults()
 
 if __name__ == "__main__":
     main()
