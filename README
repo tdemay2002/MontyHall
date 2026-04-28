@@ -1,0 +1,17 @@
+Running this program will validate the results of the Monty Hall problem by
+running through two simulations and calculating the percentage of wins.
+
+The two cases include:
+* choosing to switch your picked door
+* choosing to keep your original picked door
+
+Output will be similar to:
++-------------------------------------------------------------------------+
+|                           MONTY HALL PROBLEM                            |
++------------------------------------+------------------------------------+
+|              SWITCH                |                 STAY               |
++------------------------------------+------------------------------------+
+| * Correct 6683 times.              |   * Correct 3343 times.            |
+| * Incorrect 3317 times.            |   * Incorrect 6657 times.          |
+| * Probability of winning: 66.83%   |   * Probability of winning: 33.43% |
++------------------------------------+------------------------------------+
