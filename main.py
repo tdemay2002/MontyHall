@@ -68,12 +68,12 @@ def runSimulations(switchDoorBool):
 
 
 def printResults():
-    correctSwitchString = f" * Correct {switchCase["correct"]} times. "
-    incorrectSwitchString = f" * Incorrect {switchCase["incorrect"]} times. "
-    switchProbString = f" * Probability of winning: {switchCase["prob"]:.2f}% "
-    correctStayString = f" * Correct {stayCase["correct"]} times. "
-    incorrectStayString = f" * Incorrect {stayCase["incorrect"]} times. "
-    stayProbString = f" * Probability of winning: {stayCase["prob"]:.2f}% "
+    correctSwitchString = f" * Correct {switchCase['correct']} times. "
+    incorrectSwitchString = f" * Incorrect {switchCase['incorrect']} times. "
+    switchProbString = f" * Probability of winning: {switchCase['prob']:.2f}% "
+    correctStayString = f" * Correct {stayCase['correct']} times. "
+    incorrectStayString = f" * Incorrect {stayCase['incorrect']} times. "
+    stayProbString = f" * Probability of winning: {stayCase['prob']:.2f}% "
 
     textWidth = max(
         len(correctSwitchString),
